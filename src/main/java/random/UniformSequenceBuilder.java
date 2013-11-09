@@ -1,8 +1,8 @@
-package cobu.analytics.random;
+package random;
 
 import java.util.*;
 
-public class UniformSourceBuilder {
+public class UniformSequenceBuilder {
 
     Iterable<Double> createFromArray(Double... pArray){
         return Arrays.<Double>asList(pArray);
