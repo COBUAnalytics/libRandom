@@ -1,6 +1,8 @@
-package random;
+package org.cobu.random;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Random;
 
 public class UniformSequenceBuilder {
 

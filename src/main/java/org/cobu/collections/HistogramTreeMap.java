@@ -1,4 +1,4 @@
-package collections;
+package org.cobu.collections;
 
 import java.util.Comparator;
 import java.util.TreeMap;
