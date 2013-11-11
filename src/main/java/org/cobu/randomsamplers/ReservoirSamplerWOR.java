@@ -32,8 +32,8 @@ public class ReservoirSamplerWOR {
     }
 
     protected double nextRandomDouble() {
-        return random.nextDouble();
-    }
+            return random.nextDouble();
+        }
 
     private void removeMaxValueIfOverReservoirSize() {
         if (weightedRecords.size() > reservoirSize) {
