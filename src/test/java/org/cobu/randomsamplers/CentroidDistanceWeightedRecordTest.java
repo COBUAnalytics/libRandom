@@ -29,28 +29,50 @@ public class CentroidDistanceWeightedRecordTest {
      public void oneCentroid() {
         final DoublePoint centroid = new DoublePoint(new double[]{1, 1, 1});
         CentroidCluster[] currentClusters = new CentroidCluster[] {new CentroidCluster(centroid)};
+
         DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
-
         Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroid.getPoint()));
-        assertEquals(difference.norm(Vector.Norm.Two), new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight(), 0);
 
+        assertEquals(difference.norm(Vector.Norm.Two), new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight(), 0);
      }
 
 
     @Test
     public void twoCentroidsPicksDistanceToNearestCentroidFromPoint() {
-        fail();
+        CentroidCluster centroidCluster0 = new CentroidCluster(new DoublePoint(new double[]{1, 1, 1}));
+        CentroidCluster centroidCluster1 = new CentroidCluster(new DoublePoint(new double[]{4, 4, 4}));
+        CentroidCluster[] currentClusters = new CentroidCluster[] {centroidCluster0,centroidCluster1};
+
+        DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
+        Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
+        double expectedWeight = difference.norm(Vector.Norm.Two);
+
+        double actualWeight = new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight();
+        assertEquals(expectedWeight, actualWeight, 0);
+
     }
 
     @Test
      public void threeCentroidsPicksDistanceToNearestCentroidFromPoint() {
-         fail();
-     }
+        CentroidCluster centroidCluster0 = new CentroidCluster(new DoublePoint(new double[]{1, 1, 1}));
+        CentroidCluster centroidCluster1 = new CentroidCluster(new DoublePoint(new double[]{4, 4, 4}));
+        CentroidCluster centroidCluster2 = new CentroidCluster(new DoublePoint(new double[]{4, 1, 4}));
+
+        CentroidCluster[] currentClusters = new CentroidCluster[] {centroidCluster0,centroidCluster1, centroidCluster2};
+
+        DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
+        Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
+        double expectedWeight = difference.norm(Vector.Norm.Two);
+
+        double actualWeight = new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight();
+        assertEquals(expectedWeight, actualWeight, 0);
+
+    }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void vectorsOfDifferentDimensionFromCentroidExcepts() {
-        DenseVector wrongDimension = new DenseVector(new double[]{.1, .5, .8});
+        DenseVector wrongDimension = new DenseVector(new double[]{.1, .5});
         final DoublePoint centroid = new DoublePoint(new double[]{1, 1, 1});
         CentroidCluster[] currentClusters = new CentroidCluster[] {new CentroidCluster(centroid)};
         new CentroidDistanceWeightedRecord(currentClusters, wrongDimension);
