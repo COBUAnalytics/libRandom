@@ -1,19 +1,31 @@
 package org.cobu.collections;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Key<K extends Comparable<K>> implements Comparable<Key<K>>{
-    private final Iterable<K> keyIterable;
+    private final List<K> list;
 
-    public Key(Iterable<K> keyIterable){
-        this.keyIterable = keyIterable;
+    private static <K> List<K> createKey(K... elements){
+        List<K>list = new ArrayList<K>(elements.length);
+        for(K k:elements){
+            list.add(k);
+        }
+        return list;
+    }
 
+    public Key(K... elements){
+        this(Key.<K>createKey(elements));
+    }
+    public Key(List<K> list){
+        this.list = list;
     }
 
     @Override
     public int compareTo(Key<K> o) {
-        Iterator<K> thisIterator=keyIterable.iterator();
-        Iterator<K> otherIterator=o.keyIterable.iterator();
+        Iterator<K> thisIterator= list.iterator();
+        Iterator<K> otherIterator=o.list.iterator();
         while(thisIterator.hasNext()&&otherIterator.hasNext()){
             int sign = thisIterator.next().compareTo(otherIterator.next());
             if(sign!=0)return sign;
