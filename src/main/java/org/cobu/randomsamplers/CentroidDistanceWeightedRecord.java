@@ -1,62 +1,58 @@
 package org.cobu.randomsamplers;
 
 import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
+import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 
 public class CentroidDistanceWeightedRecord implements WeightedRecord {
-    private final double weight;
-    private final CentroidCluster[] currentClusters;
-    private final DenseVector vector;
+    private double weight = 1.0;
+    private double[] dataDouble;
+    private DistanceMeasure distanceMeasure;
+    private CentroidCluster[] clusters;
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, DenseVector dataVector) {
-        this.currentClusters = currentClusters;
-        this.vector = dataVector;
-        if (currentClusters.length == 0) {
+    public CentroidDistanceWeightedRecord(CentroidCluster[] clusters, double[] dataDouble, DistanceMeasure distanceMeasure) {
+        this.dataDouble = dataDouble;
+        this.distanceMeasure = distanceMeasure;
+        this.clusters = clusters;
+        if (clusters.length == 0) {
             weight = 1.0;
         } else {
-            double distanceToNearestCentroid = Double.MAX_VALUE;
 
-            for (int i = 0; i < currentClusters.length; i++) {
-
-                double[] centroid = currentClusters[i].getCenter().getPoint();
-                if (centroid.length != dataVector.size()) {
-                    throw new IllegalArgumentException();
-                }
-
-                double distanceToCurrentCentroid = distanceToCurrentCentroid(dataVector, centroid);
-
-                if(distanceToNearestCentroid> distanceToCurrentCentroid){
-                    distanceToNearestCentroid = distanceToCurrentCentroid;
-                }
-            }
-
-
-            weight = distanceToNearestCentroid;
+            weight = calculateDistanceToNearestCentroid();
         }
 
     }
 
-    private double distanceToCurrentCentroid(DenseVector dataVector, double[] centroid) {
-        return new DenseVector(dataVector).add(-1.0, new DenseVector(centroid)).norm(Vector.Norm.Two);
+    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, DenseVector dataVector) {
+        this(currentClusters, dataVector.getData(), new EuclideanDistance());
     }
 
-    private int findClosestCenter() {
-        int closestCenterIndex = 0;
-        double minDistance = Double.MAX_VALUE;
-        for (int i = 0, currentClustersLength = currentClusters.length; i < currentClustersLength; i++) {
-            CentroidCluster currentCluster = currentClusters[i];
-            double[] center = currentCluster.getCenter().getPoint();
-            double difference = new DenseVector(vector).add(-1, new DenseVector(center)).norm(Vector.Norm.Two);
-            if (minDistance > difference) {
-                minDistance = difference;
-                closestCenterIndex = i;
+    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, double[] dataDouble) {
+        this(currentClusters, dataDouble, new EuclideanDistance());
+    }
+
+
+    private double calculateDistanceToNearestCentroid() {
+        double distanceToNearestCentroid = Double.MAX_VALUE;
+        for (int i = 0; i < clusters.length; i++) {
+
+            double[] centroid = clusters[i].getCenter().getPoint();
+            if (centroid.length != dataDouble.length) {
+                throw new IllegalArgumentException();
+            }
+
+
+            double distanceToCurrentCentroid = distanceMeasure.compute(this.dataDouble, centroid);
+
+            if (distanceToNearestCentroid > distanceToCurrentCentroid) {
+                distanceToNearestCentroid = distanceToCurrentCentroid;
             }
         }
-
-        return closestCenterIndex;
+        return distanceToNearestCentroid;
     }
+
 
     @Override
     public double getWeight() {

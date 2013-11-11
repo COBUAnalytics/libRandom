@@ -4,6 +4,9 @@ import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
+import org.apache.commons.math3.ml.distance.EuclideanDistance;
+import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
