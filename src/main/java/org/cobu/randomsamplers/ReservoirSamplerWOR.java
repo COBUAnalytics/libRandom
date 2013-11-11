@@ -15,7 +15,6 @@ public class ReservoirSamplerWOR {
     }
 
     public void add(WeightedRecord weightedRecord) {
-
         ScoredWeightedRecord newScore = new ScoredWeightedRecord(nextRandomDouble(), weightedRecord);
 
         boolean notEnoughValues = weightedRecords.size() < reservoirSize;
