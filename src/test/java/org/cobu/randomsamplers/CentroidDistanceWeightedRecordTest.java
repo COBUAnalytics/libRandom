@@ -80,4 +80,4 @@ public class CentroidDistanceWeightedRecordTest {
         CentroidCluster[] currentClusters = new CentroidCluster[] {new CentroidCluster(centroid)};
         new CentroidDistanceWeightedRecord(currentClusters, wrongDimension);
     }
-}
+    }
