@@ -20,14 +20,14 @@ public class ReservoirSamplerWORTest {
     public void reservoirSizeOfOnePopulationSizeTwoSelectsLowestWeight() {
         final double[] probabilities = new double[]{0.5, 0.5};
         ReservoirSamplerWOR rswor = new ArraySamples(probabilities);
-        WeightedRecord biggerOne = new WeightedRecordAdapter(1.0);
-        WeightedRecord smallerOne = new WeightedRecordAdapter(2.0);
+        WeightedRecord smallerOne = new WeightedRecordAdapter(1.0);
+        WeightedRecord biggerOne = new WeightedRecordAdapter(2.0);
 
-        rswor.add(biggerOne);
         rswor.add(smallerOne);
+        rswor.add(biggerOne);
         WeightedRecord[] samples = rswor.getSamples();
         assertEquals(1, samples.length);
-        assertSame(smallerOne, samples[0]);
+        assertSame(biggerOne, samples[0]);
     }
 
 

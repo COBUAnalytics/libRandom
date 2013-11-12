@@ -18,7 +18,7 @@ public class ReservoirSamplerWOR {
         ScoredWeightedRecord newScore = new ScoredWeightedRecord(nextRandomDouble(), weightedRecord);
 
         boolean notEnoughValues = weightedRecords.size() < reservoirSize;
-        boolean smallerThanCurrentMax = weightedRecords.last().compareTo(newScore) > 0;
+        boolean smallerThanCurrentMax = weightedRecords.isEmpty() ? false : weightedRecords.last().compareTo(newScore) > 0;
         if (notEnoughValues || smallerThanCurrentMax) {
             weightedRecords.add(newScore);
             removeMaxValueIfOverReservoirSize();
@@ -27,7 +27,12 @@ public class ReservoirSamplerWOR {
     }
 
     public WeightedRecord[] getSamples() {
-        return weightedRecords.toArray(new WeightedRecord[weightedRecords.size()]);
+        WeightedRecord[] toReturn = new WeightedRecord[weightedRecords.size()];
+        int i = 0;
+        for (ScoredWeightedRecord weightedRecord : weightedRecords) {
+            toReturn[i] = weightedRecord.getRecord();
+        }
+        return toReturn;
     }
 
     protected double nextRandomDouble() {

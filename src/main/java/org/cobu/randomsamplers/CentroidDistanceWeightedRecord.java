@@ -58,5 +58,7 @@ public class CentroidDistanceWeightedRecord implements WeightedRecord {
     public double getWeight() {
         return weight;
     }
+
+
 }
 
