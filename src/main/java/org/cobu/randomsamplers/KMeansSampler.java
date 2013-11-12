@@ -1,45 +1,81 @@
 package org.cobu.randomsamplers;
 
-import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.cobu.collections.iterablefactories.VectorIterableAbstractFactory;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class KMeansSampler {
-    private final Random random;
-    private final int numberOfCentroids;
-    private final Iterable<? extends Vector> factory;
+    private final List<CentroidCluster<DoublePoint>> centroids;
+    private int sampleSize;
+    private final DoublePoint[] samples;
 
+    public KMeansSampler(Random random, int numberOfClusters, int sampleSize, Iterable<DoublePoint> factory) {
 
-    public KMeansSampler(Random random, int numberOfCentroids, Iterable<? extends Vector> factory) {
-        this.random = random;
-        this.numberOfCentroids = numberOfCentroids;
-        this.factory = factory;
+        this.centroids = new ArrayList<CentroidCluster<DoublePoint>>();
+        this.sampleSize = sampleSize;
+        checkReservoirSmallerThanTotal(factory);
+
+        findClusterCentroids(random, numberOfClusters, factory);
+        this.samples = sampleUsingCentroids(random, factory);
+
     }
-    // Run across all data with sampler on reservoir size of 1 for each of K clusters
-    // at first centroid count is zero (use 1 as weight to get random point)
-    // after that, number of centroids you have already selected
+
+    private void checkReservoirSmallerThanTotal(Iterable<DoublePoint> factory) {
+        int i = 0;
+        for (DoublePoint doublePoint : factory) {
+            i++;
+        }
+        if (this.sampleSize > i) throw new IllegalStateException();
+    }
+
+    private void findClusterCentroids(Random random, int numberOfClusters, Iterable<DoublePoint> factory) {
+        for (int i = 0; i < numberOfClusters; i++) {
+            centroids.add(travelThroughDataToPickNextCentroid(random, factory));
+        }
+    }
+
+    private DoublePoint[] sampleUsingCentroids(Random random, Iterable<DoublePoint> factory) {
+        DoublePoint[] samples = new DoublePoint[0];
+        if (sampleSize > 0) {
+            ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
+                    new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(random, sampleSize);
+            final CentroidCluster[] centroids = this.centroids.toArray(new CentroidCluster[this.centroids.size()]);
+            for (DoublePoint vectorEntries : factory) {
+                CentroidDistanceWeightedRecord cdwr = new CentroidDistanceWeightedRecord(centroids, vectorEntries);
+                sampler.add(cdwr);
+            }
+
+            samples = new DoublePoint[sampleSize];
+            for (int i = 0; i < samples.length; i++) {
+                samples[i] = new DoublePoint(sampler.getSamples().get(i).getRecord());
+
+            }
+        }
+        return samples;
+    }
+
+    private CentroidCluster<DoublePoint> travelThroughDataToPickNextCentroid(Random random, Iterable<DoublePoint> factory) {
+        ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
+                new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(random, 1);
+        final CentroidCluster[] currentClusters = centroids.toArray(new CentroidCluster[centroids.size()]);
+        for (DoublePoint vectorEntries : factory) {
+            CentroidDistanceWeightedRecord cdwr = new CentroidDistanceWeightedRecord(currentClusters, vectorEntries);
+            sampler.add(cdwr);
+        }
+        return new CentroidCluster<DoublePoint>(new DoublePoint(sampler.getSamples().get(0).getRecord()));
+    }
+
     // Once all centroids have been selected, rerun to get sample of size R
 
-    public static void main(String[] args) {
-        ReservoirSamplerWOR rswor = new ReservoirSamplerWOR(new MersenneTwisterRandom(3234), 1);
-        CentroidCluster[] currentClusters = new CentroidCluster[0];
-
-
-//        new CentroidDistanceWeightedRecord(currentClusters, )
-//        rswor.add(dataVector);
-
-
-
-        WeightedRecord[] samples = rswor.getSamples();
+    public List<CentroidCluster<DoublePoint>> getCentroids() {
+        return Collections.unmodifiableList(centroids);
     }
 
-    protected double nextRandomDouble() {
-        return random.nextDouble();
-    }
-
-    public Vector[] getCentroids() {
-        return null;
+    public DoublePoint[] samples() {
+        return samples;
     }
 }

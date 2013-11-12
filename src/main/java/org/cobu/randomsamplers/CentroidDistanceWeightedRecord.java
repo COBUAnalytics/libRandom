@@ -1,50 +1,48 @@
 package org.cobu.randomsamplers;
 
-import no.uib.cipr.matrix.DenseVector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 
 public class CentroidDistanceWeightedRecord implements WeightedRecord {
     private double weight = 1.0;
-    private double[] dataDouble;
+    private double[] record;
     private DistanceMeasure distanceMeasure;
     private CentroidCluster[] clusters;
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] clusters, double[] dataDouble, DistanceMeasure distanceMeasure) {
-        this.dataDouble = dataDouble;
+    public CentroidDistanceWeightedRecord(CentroidCluster[] clusters, double[] record, DistanceMeasure distanceMeasure) {
+        this.record = record;
         this.distanceMeasure = distanceMeasure;
         this.clusters = clusters;
         if (clusters.length == 0) {
             weight = 1.0;
         } else {
-
             weight = calculateDistanceToNearestCentroid();
         }
 
     }
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, DenseVector dataVector) {
-        this(currentClusters, dataVector.getData(), new EuclideanDistance());
+    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, DoublePoint dataVector) {
+        this(currentClusters, dataVector.getPoint(), new EuclideanDistance());
     }
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, double[] dataDouble) {
-        this(currentClusters, dataDouble, new EuclideanDistance());
+    public double[] getRecord() {
+        return record;
     }
-
 
     private double calculateDistanceToNearestCentroid() {
         double distanceToNearestCentroid = Double.MAX_VALUE;
-        for (int i = 0; i < clusters.length; i++) {
+        for (CentroidCluster cluster : clusters) {
 
-            double[] centroid = clusters[i].getCenter().getPoint();
-            if (centroid.length != dataDouble.length) {
+            double[] centroid = cluster.getCenter().getPoint();
+            if (centroid.length != record.length) {
                 throw new IllegalArgumentException();
             }
 
 
-            double distanceToCurrentCentroid = distanceMeasure.compute(this.dataDouble, centroid);
+            double distanceToCurrentCentroid = distanceMeasure.compute(this.record, centroid);
 
             if (distanceToNearestCentroid > distanceToCurrentCentroid) {
                 distanceToNearestCentroid = distanceToCurrentCentroid;

@@ -4,20 +4,16 @@ import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
-import org.apache.commons.math3.ml.distance.EuclideanDistance;
-import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class CentroidDistanceWeightedRecordTest {
 
     @Test
     public void zeroCentroidsReturnsWeightOfOne() {
-        DenseVector smallVector = new DenseVector(new double[]{.1, .5, .8});
-        DenseVector largeVector = new DenseVector(new double[]{100, 299, 4587});
+        DoublePoint smallVector = new DoublePoint(new double[]{.1, .5, .8});
+        DoublePoint largeVector = new DoublePoint(new double[]{100, 299, 4587});
         CentroidCluster[] currentClusters = new CentroidCluster[0];
         CentroidDistanceWeightedRecord smallWeightedRecord = new CentroidDistanceWeightedRecord(currentClusters, smallVector);
         CentroidDistanceWeightedRecord largeWeightedRecord = new CentroidDistanceWeightedRecord(currentClusters, largeVector);
@@ -33,8 +29,8 @@ public class CentroidDistanceWeightedRecordTest {
         final DoublePoint centroid = new DoublePoint(new double[]{1, 1, 1});
         CentroidCluster[] currentClusters = new CentroidCluster[] {new CentroidCluster(centroid)};
 
-        DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
-        Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroid.getPoint()));
+        DoublePoint threeDistance = new DoublePoint(new double[]{4, 4, 4});
+        Vector difference = new DenseVector(threeDistance.getPoint()).add(-1, new DenseVector(centroid.getPoint()));
 
         assertEquals(difference.norm(Vector.Norm.Two), new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight(), 0);
      }
@@ -46,8 +42,8 @@ public class CentroidDistanceWeightedRecordTest {
         CentroidCluster centroidCluster1 = new CentroidCluster(new DoublePoint(new double[]{4, 4, 4}));
         CentroidCluster[] currentClusters = new CentroidCluster[] {centroidCluster0,centroidCluster1};
 
-        DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
-        Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
+        DoublePoint threeDistance = new DoublePoint(new double[]{4, 4, 4});
+        Vector difference = new DenseVector(threeDistance.getPoint()).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
         double expectedWeight = difference.norm(Vector.Norm.Two);
 
         double actualWeight = new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight();
@@ -63,8 +59,8 @@ public class CentroidDistanceWeightedRecordTest {
 
         CentroidCluster[] currentClusters = new CentroidCluster[] {centroidCluster0,centroidCluster1, centroidCluster2};
 
-        DenseVector threeDistance = new DenseVector(new double[]{4, 4, 4});
-        Vector difference = new DenseVector(threeDistance).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
+        DoublePoint threeDistance = new DoublePoint(new double[]{4, 4, 4});
+        Vector difference = new DenseVector(threeDistance.getPoint()).add(-1, new DenseVector(centroidCluster1.getCenter().getPoint()));
         double expectedWeight = difference.norm(Vector.Norm.Two);
 
         double actualWeight = new CentroidDistanceWeightedRecord(currentClusters, threeDistance).getWeight();
@@ -75,7 +71,7 @@ public class CentroidDistanceWeightedRecordTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void vectorsOfDifferentDimensionFromCentroidExcepts() {
-        DenseVector wrongDimension = new DenseVector(new double[]{.1, .5});
+        DoublePoint wrongDimension = new DoublePoint(new double[]{.1, .5});
         final DoublePoint centroid = new DoublePoint(new double[]{1, 1, 1});
         CentroidCluster[] currentClusters = new CentroidCluster[] {new CentroidCluster(centroid)};
         new CentroidDistanceWeightedRecord(currentClusters, wrongDimension);
