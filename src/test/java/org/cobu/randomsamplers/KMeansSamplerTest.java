@@ -1,13 +1,15 @@
 package org.cobu.randomsamplers;
 
 import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class KMeansSamplerTest {
     private NormalDistribution x0 = new NormalDistribution(10,1, 1e-9);
@@ -24,22 +26,48 @@ public class KMeansSamplerTest {
 
 
     @Test
-    public void TestReservoirSizeOnePopulation100k(){
-        int reservoirSize = 1;
-        ReservoirSamplerWOR rswor = new ReservoirSamplerWOR(new MersenneTwisterRandom(3234), reservoirSize);
-        CentroidCluster[] currentClusters = new CentroidCluster[0];
+    public void testGetCentroidOneCluster(){
 
-        for (DenseVector dataVector : A) {
-            CentroidDistanceWeightedRecord weightedRecord = new CentroidDistanceWeightedRecord(currentClusters, dataVector);
-            rswor.add(weightedRecord);
+        int numberOfCentroids = 1;
+        double[] randsToSelectSecond = {0.25, 0.5};
+        Vector first = new DenseVector(new double[]{.1, .2, .3});
+        Vector second = new DenseVector(new double[]{.1, .5, .3});
+
+        KMeansSampler sampler = new ArraySamples(numberOfCentroids, randsToSelectSecond, first, second);
+        Vector[] centroids = sampler.getCentroids();
+        assertEquals(1, centroids.length);
+        assertEquals(second, centroids[0]);
+     }
+
+    private class ArrayIterable<T extends Vector> implements Iterable<T> {
+        private final T[] vectors;
+
+        ArrayIterable(T... vectors) {
+
+            this.vectors = vectors;
         }
 
-
-        WeightedRecord[] samples = rswor.getSamples();
-
-//        for (WeightedRecord sample : samples) {
-//            sample.getRecord();
-//        }
-        System.out.println(samples[0].getWeight());
+        @Override
+        public Iterator<T> iterator() {
+            return Arrays.asList(vectors).iterator();
+        }
     }
+
+    private class ArraySamples extends KMeansSampler {
+
+        private final double[] values;
+        private int i;
+
+        public ArraySamples(int numberOfClusters, double[] values, Vector... vectors) {
+            super(null, numberOfClusters, new ArrayIterable<Vector>(vectors));
+            this.values = values;
+        }
+
+        @Override
+        protected double nextRandomDouble() {
+            return values[i++];
+        }
+    }
+
+
 }
