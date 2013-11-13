@@ -8,6 +8,6 @@ public class KeyTest {
     @Test
     public void bothEmpty(){
         Key<Integer> keyOne = new Key<Integer>(new LinkedList<Integer>());
-        System.out.println(keyOne.compareTo(keyOne));
+//        System.out.println(keyOne.compareTo(keyOne));
     }
 }
