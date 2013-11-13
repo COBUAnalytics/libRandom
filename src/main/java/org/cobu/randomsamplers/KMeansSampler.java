@@ -11,20 +11,34 @@ import java.util.Random;
 public class KMeansSampler {
     private final List<CentroidCluster<DoublePoint>> centroids;
     private int sampleSize;
-    private final DoublePoint[] samples;
+    private Random random;
+    private Iterable<DoublePoint> factory;
 
-    public KMeansSampler(Random random, int numberOfClusters, int sampleSize, Iterable<DoublePoint> factory) {
+    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<DoublePoint> factory) {
 
         this.centroids = new ArrayList<CentroidCluster<DoublePoint>>();
         this.sampleSize = sampleSize;
-        checkReservoirSmallerThanTotal(factory);
+        this.factory = factory;
+        this.random = random;
 
-        findClusterCentroids(random, numberOfClusters, factory);
-        this.samples = sampleUsingCentroids(random, factory);
+        checkReservoirSmallerThanTotal();
+
+        findClusterCentroids(numberOfCentroids);
 
     }
 
-    private void checkReservoirSmallerThanTotal(Iterable<DoublePoint> factory) {
+    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Iterable<DoublePoint> factory) {
+
+        this.centroids = centroids;
+        this.sampleSize = sampleSize;
+        this.factory = factory;
+        this.random = random;
+        checkReservoirSmallerThanTotal();
+
+
+    }
+
+    private void checkReservoirSmallerThanTotal() {
         int i = 0;
         for (DoublePoint doublePoint : factory) {
             i++;
@@ -32,13 +46,13 @@ public class KMeansSampler {
         if (this.sampleSize > i) throw new IllegalStateException();
     }
 
-    private void findClusterCentroids(Random random, int numberOfClusters, Iterable<DoublePoint> factory) {
+    private void findClusterCentroids(int numberOfClusters) {
         for (int i = 0; i < numberOfClusters; i++) {
-            centroids.add(travelThroughDataToPickNextCentroid(random, factory));
+            centroids.add(travelThroughDataToPickNextCentroid());
         }
     }
 
-    private DoublePoint[] sampleUsingCentroids(Random random, Iterable<DoublePoint> factory) {
+    private DoublePoint[] sampleUsingCentroids() {
         DoublePoint[] samples = new DoublePoint[0];
         if (sampleSize > 0) {
             ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
@@ -58,7 +72,7 @@ public class KMeansSampler {
         return samples;
     }
 
-    private CentroidCluster<DoublePoint> travelThroughDataToPickNextCentroid(Random random, Iterable<DoublePoint> factory) {
+    private CentroidCluster<DoublePoint> travelThroughDataToPickNextCentroid() {
         ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
                 new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(random, 1);
         final CentroidCluster[] currentClusters = centroids.toArray(new CentroidCluster[centroids.size()]);
@@ -76,6 +90,6 @@ public class KMeansSampler {
     }
 
     public DoublePoint[] samples() {
-        return samples;
+        return sampleUsingCentroids();
     }
 }
