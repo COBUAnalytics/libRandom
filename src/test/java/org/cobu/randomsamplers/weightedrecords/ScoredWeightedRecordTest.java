@@ -1,5 +1,7 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
+import org.cobu.randomsamplers.weightedrecords.ScoredWeightedRecord;
+import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -2,6 +2,7 @@ package org.cobu.randomsamplers;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 
 import java.util.ArrayList;
 import java.util.Collections;

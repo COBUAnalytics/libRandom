@@ -1,4 +1,4 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
 public class ScoredWeightedRecord<T extends WeightedRecord> implements Comparable<ScoredWeightedRecord> {
     private final T record;

@@ -1,5 +1,8 @@
 package org.cobu.randomsamplers;
 
+import org.cobu.randomsamplers.weightedrecords.ScoredWeightedRecord;
+import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

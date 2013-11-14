@@ -1,9 +1,10 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Vector;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

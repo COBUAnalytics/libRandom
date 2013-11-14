@@ -1,5 +1,7 @@
 package org.cobu.randomsamplers;
 
+import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
+import org.cobu.randomsamplers.weightedrecords.WeightedRecordAdapter;
 import org.junit.Test;
 
 import java.util.List;

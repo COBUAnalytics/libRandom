@@ -1,5 +1,7 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
+
+import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
 
 public class WeightedRecordAdapter implements WeightedRecord {
 
