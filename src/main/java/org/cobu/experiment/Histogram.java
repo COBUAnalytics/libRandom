@@ -1,10 +1,10 @@
-package org.cobu.collections;
+package org.cobu.experiment;
 
 import java.util.TreeMap;
 
-public class HistogramTreeMap<Key extends Comparable<Key>> {
+public class Histogram<Key extends Comparable<Key>> {
     TreeMap<Key,Integer> count = new TreeMap<Key,Integer>();
-    public HistogramTreeMap(){}
+    public Histogram(){}
     public void add(Key key){
         if(!count.containsKey(key)){
             count.put(key,0);
