@@ -1,10 +1,10 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
-public class ScoredWeightedRecord implements Comparable<ScoredWeightedRecord> {
-    private final WeightedRecord record;
+public class ScoredWeightedRecord<T extends WeightedRecord> implements Comparable<ScoredWeightedRecord> {
+    private final T record;
     private final double score;
 
-    public ScoredWeightedRecord(double randomDouble, WeightedRecord record) {
+    public ScoredWeightedRecord(double randomDouble, T record) {
         this.record = record;
         this.score = -Math.log(randomDouble) / record.getWeight();
     }
@@ -14,7 +14,7 @@ public class ScoredWeightedRecord implements Comparable<ScoredWeightedRecord> {
         return Double.compare(score,o.score);
     }
 
-    public WeightedRecord getRecord() {
+    public T getRecord() {
         return record;
     }
 }

@@ -1,4 +1,4 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
 import org.junit.Test;
 
@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class ScoredWeightedRecordTest {
 
     private ScoredWeightedRecord createScoredWeightedRecord(final double random, final double weight) {
-        return new ScoredWeightedRecord(random, new WeightedRecord() {
+        return new ScoredWeightedRecord<WeightedRecord>(random, new WeightedRecord() {
             @Override
             public double getWeight() {
                 return weight;

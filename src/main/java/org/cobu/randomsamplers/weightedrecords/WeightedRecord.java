@@ -1,4 +1,4 @@
-package org.cobu.randomsamplers;
+package org.cobu.randomsamplers.weightedrecords;
 
 
 public interface WeightedRecord {
