@@ -6,20 +6,20 @@ import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 
 import java.util.*;
 
-public class KMeansSampler {
-    private final List<CentroidCluster<DoublePoint>> centroids;
+public class KMeansSampler<P extends DoublePoint> {
+    private final List<CentroidCluster<P>> centroids;
     private int sampleSize;
     private Random random;
     private final long populationSize;
-    private Iterable<DoublePoint> factory;
+    private Iterable<P> factory;
 
-    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Collection<DoublePoint> factory) {
+    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Collection<P> factory) {
         this(random, numberOfCentroids, sampleSize, factory, factory.size());
     }
 
-    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<DoublePoint> factory, long populationSize) {
+    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<P> factory, long populationSize) {
         this.populationSize = populationSize;
-        this.centroids = new ArrayList<CentroidCluster<DoublePoint>>();
+        this.centroids = new ArrayList<CentroidCluster<P>>();
         this.sampleSize = sampleSize;
         this.factory = factory;
         this.random = random;
@@ -29,11 +29,11 @@ public class KMeansSampler {
         findClusterCentroids(numberOfCentroids);
     }
 
-    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Collection<DoublePoint> factory) {
+    public KMeansSampler(Random random, List<CentroidCluster<P>> centroids, int sampleSize, Collection<P> factory) {
         this(random, centroids, sampleSize, factory, factory.size());
     }
 
-    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Iterable<DoublePoint> factory, long populationSize) {
+    public KMeansSampler(Random random, List<CentroidCluster<P>> centroids, int sampleSize, Iterable<P> factory, long populationSize) {
 
         this.centroids = centroids;
         this.sampleSize = sampleSize;
@@ -55,44 +55,44 @@ public class KMeansSampler {
         }
     }
 
-    private DoublePoint[] sampleUsingCentroids() {
-        DoublePoint[] samples = new DoublePoint[0];
+    public List<P> samples() {
+        List<P> samples = new ArrayList<P>();
         if (sampleSize > 0) {
-            ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
-                    new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(random, sampleSize);
+            ReservoirSamplerWOR<CentroidDistanceWeightedRecord<P>> sampler =
+                    new ReservoirSamplerWOR<CentroidDistanceWeightedRecord<P>>(random, sampleSize);
             final CentroidCluster[] centroids = this.centroids.toArray(new CentroidCluster[this.centroids.size()]);
-            for (DoublePoint vectorEntries : factory) {
-                CentroidDistanceWeightedRecord cdwr = new CentroidDistanceWeightedRecord(centroids, vectorEntries);
+            for (P vectorEntries : factory) {
+                CentroidDistanceWeightedRecord<P> cdwr = new CentroidDistanceWeightedRecord<P>(centroids, vectorEntries);
                 sampler.add(cdwr);
             }
 
-            samples = new DoublePoint[sampleSize];
-            for (int i = 0; i < samples.length; i++) {
-                samples[i] = new DoublePoint(sampler.getSamples().get(i).getRecord());
+            samples = new ArrayList<P>(sampleSize);
+            for (int i = 0; i < sampleSize; i++) {
+                P record = sampler.getSamples().get(i).getRecord();
+                samples.add(record);
 
             }
         }
+
         return samples;
     }
 
-    private CentroidCluster<DoublePoint> travelThroughDataToPickNextCentroid() {
+    private CentroidCluster<P> travelThroughDataToPickNextCentroid() {
         ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
                 new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(random, 1);
         final CentroidCluster[] currentClusters = centroids.toArray(new CentroidCluster[centroids.size()]);
-        for (DoublePoint vectorEntries : factory) {
-            CentroidDistanceWeightedRecord cdwr = new CentroidDistanceWeightedRecord(currentClusters, vectorEntries);
+        for (P vectorEntries : factory) {
+            CentroidDistanceWeightedRecord<P> cdwr = new CentroidDistanceWeightedRecord<P>(currentClusters, vectorEntries);
             sampler.add(cdwr);
         }
-        return new CentroidCluster<DoublePoint>(new DoublePoint(sampler.getSamples().get(0).getRecord()));
+        double[] centroidData = sampler.getSamples().get(0).getRecord().getPoint();
+        return new CentroidCluster<P>(new DoublePoint(centroidData));
     }
 
     // Once all centroids have been selected, rerun to get sample of size R
 
-    public List<CentroidCluster<DoublePoint>> getCentroids() {
+    public List<CentroidCluster<P>> getCentroids() {
         return Collections.unmodifiableList(centroids);
     }
 
-    public DoublePoint[] samples() {
-        return sampleUsingCentroids();
-    }
 }

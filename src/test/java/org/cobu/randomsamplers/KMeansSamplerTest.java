@@ -18,7 +18,7 @@ public class KMeansSamplerTest {
         DoublePoint first = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
-        KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
+        KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, 0, Arrays.asList(first, second));
         final List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(1, centroids.size());
@@ -35,7 +35,7 @@ public class KMeansSamplerTest {
         DoublePoint fistCentroidPicked = new DoublePoint(new double[]{100, 300, 300});
         DoublePoint closeToFirstCentroid = createVectorCloseBy(fistCentroidPicked);
 
-        KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
+        KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, sampleSize, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid));
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(2, centroids.size());
@@ -59,7 +59,7 @@ public class KMeansSamplerTest {
         DoublePoint farAway = new DoublePoint(new double[]{4, 5, 6});
         DoublePoint fartherAway = new DoublePoint(new double[]{1, 1, 1});
 
-        KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
+        KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, sizeOfSample, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid,
                 closeToSecondCentroid, farAway, fartherAway));
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
@@ -68,7 +68,8 @@ public class KMeansSamplerTest {
         assertEquals(fistCentroidPicked.getPoint(), centroids.get(0).getCenter().getPoint());
         assertEquals(secondCentroid.getPoint(), centroids.get(1).getCenter().getPoint());
 
-        DoublePoint[] samples = sampler.samples();
+        List<DoublePoint> samples1 = sampler.samples();
+        DoublePoint[] samples = samples1.toArray(new DoublePoint[samples1.size()]);
         Assert.assertEquals(2, samples.length);
         assertEquals(samples[0].getPoint(), farAway.getPoint());
         assertEquals(samples[1].getPoint(), fartherAway.getPoint());
@@ -84,7 +85,7 @@ public class KMeansSamplerTest {
         DoublePoint first = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
-        new KMeansSampler(new ArrayRandom(randsToSelectSecond),
+        new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second));
     }
 

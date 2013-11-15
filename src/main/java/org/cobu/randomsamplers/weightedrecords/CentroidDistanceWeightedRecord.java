@@ -6,13 +6,13 @@ import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 
-public class CentroidDistanceWeightedRecord implements WeightedRecord {
+public class CentroidDistanceWeightedRecord<P extends DoublePoint> implements WeightedRecord {
     private double weight = 1.0;
-    private double[] record;
+    private P record;
     private DistanceMeasure distanceMeasure;
     private CentroidCluster[] clusters;
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] clusters, double[] record, DistanceMeasure distanceMeasure) {
+    public CentroidDistanceWeightedRecord(CentroidCluster[] clusters, P record, DistanceMeasure distanceMeasure) {
         this.record = record;
         this.distanceMeasure = distanceMeasure;
         this.clusters = clusters;
@@ -24,11 +24,11 @@ public class CentroidDistanceWeightedRecord implements WeightedRecord {
 
     }
 
-    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, DoublePoint dataVector) {
-        this(currentClusters, dataVector.getPoint(), new EuclideanDistance());
+    public CentroidDistanceWeightedRecord(CentroidCluster[] currentClusters, P dataVector) {
+        this(currentClusters, dataVector, new EuclideanDistance());
     }
 
-    public double[] getRecord() {
+    public P getRecord() {
         return record;
     }
 
@@ -37,12 +37,12 @@ public class CentroidDistanceWeightedRecord implements WeightedRecord {
         for (CentroidCluster cluster : clusters) {
 
             double[] centroid = cluster.getCenter().getPoint();
-            if (centroid.length != record.length) {
+            if (centroid.length != record.getPoint().length) {
                 throw new IllegalArgumentException();
             }
 
 
-            double distanceToCurrentCentroid = distanceMeasure.compute(this.record, centroid);
+            double distanceToCurrentCentroid = distanceMeasure.compute(this.record.getPoint(), centroid);
 
             if (distanceToNearestCentroid > distanceToCurrentCentroid) {
                 distanceToNearestCentroid = distanceToCurrentCentroid;
