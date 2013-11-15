@@ -4,19 +4,21 @@ import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class KMeansSampler {
     private final List<CentroidCluster<DoublePoint>> centroids;
     private int sampleSize;
     private Random random;
+    private final long populationSize;
     private Iterable<DoublePoint> factory;
 
-    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<DoublePoint> factory) {
+    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Collection<DoublePoint> factory) {
+        this(random, numberOfCentroids, sampleSize, factory, factory.size());
+    }
 
+    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<DoublePoint> factory, long populationSize) {
+        this.populationSize = populationSize;
         this.centroids = new ArrayList<CentroidCluster<DoublePoint>>();
         this.sampleSize = sampleSize;
         this.factory = factory;
@@ -25,26 +27,26 @@ public class KMeansSampler {
         checkReservoirSmallerThanTotal();
 
         findClusterCentroids(numberOfCentroids);
-
     }
 
-    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Iterable<DoublePoint> factory) {
+    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Collection<DoublePoint> factory) {
+        this(random, centroids, sampleSize, factory, factory.size());
+    }
+
+    public KMeansSampler(Random random, List<CentroidCluster<DoublePoint>> centroids, int sampleSize, Iterable<DoublePoint> factory, long populationSize) {
 
         this.centroids = centroids;
         this.sampleSize = sampleSize;
         this.factory = factory;
         this.random = random;
+        this.populationSize = populationSize;
         checkReservoirSmallerThanTotal();
-
-
     }
 
     private void checkReservoirSmallerThanTotal() {
-        int i = 0;
-        for (DoublePoint doublePoint : factory) {
-            i++;
+        if (sampleSize > populationSize){
+            throw new IllegalStateException("Sample size cannot be larger than population size");
         }
-        if (this.sampleSize > i) throw new IllegalStateException();
     }
 
     private void findClusterCentroids(int numberOfClusters) {

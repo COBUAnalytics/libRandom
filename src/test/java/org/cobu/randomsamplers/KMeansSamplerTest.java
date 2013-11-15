@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +19,7 @@ public class KMeansSamplerTest {
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
         KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, 0, new ArrayIterable(first, second));
+                numberOfCentroids, 0, Arrays.asList(first, second));
         final List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(1, centroids.size());
 
@@ -37,7 +36,7 @@ public class KMeansSamplerTest {
         DoublePoint closeToFirstCentroid = createVectorCloseBy(fistCentroidPicked);
 
         KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sampleSize, new ArrayIterable(secondCentroid, fistCentroidPicked, closeToFirstCentroid));
+                numberOfCentroids, sampleSize, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid));
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(2, centroids.size());
 
@@ -61,7 +60,7 @@ public class KMeansSamplerTest {
         DoublePoint fartherAway = new DoublePoint(new double[]{1, 1, 1});
 
         KMeansSampler sampler = new KMeansSampler(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sizeOfSample, new ArrayIterable(secondCentroid, fistCentroidPicked, closeToFirstCentroid,
+                numberOfCentroids, sizeOfSample, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid,
                 closeToSecondCentroid, farAway, fartherAway));
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(2, centroids.size());
@@ -86,7 +85,7 @@ public class KMeansSamplerTest {
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
         new KMeansSampler(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, Integer.MAX_VALUE, new ArrayIterable(first, second));
+                numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second));
     }
 
     private DoublePoint createVectorCloseBy(DoublePoint vector) {
@@ -103,19 +102,6 @@ public class KMeansSamplerTest {
         Assert.assertEquals(a.length, b.length);
         for (int i = 0; i < a.length; i++) {
             Assert.assertEquals(a[i], b[i], 1.0E-9);
-        }
-    }
-
-    private class ArrayIterable implements Iterable<DoublePoint> {
-        private final DoublePoint[] vectors;
-
-        ArrayIterable(DoublePoint... vectors) {
-            this.vectors = vectors;
-        }
-
-        @Override
-        public Iterator<DoublePoint> iterator() {
-            return Arrays.asList(vectors).iterator();
         }
     }
 
