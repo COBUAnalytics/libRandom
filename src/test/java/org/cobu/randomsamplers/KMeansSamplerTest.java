@@ -18,8 +18,11 @@ public class KMeansSamplerTest {
         DoublePoint first = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
+        int sampleSize = 0;
+        long populationSize = 2;
+
         KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, 0, Arrays.asList(first, second));
+                numberOfCentroids, sampleSize, Arrays.asList(first, second), populationSize);
         final List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(1, centroids.size());
 
@@ -30,13 +33,15 @@ public class KMeansSamplerTest {
     public void testGetTwoCentroidsCluster() {
         int numberOfCentroids = 2;
         int sampleSize = 0;
+        long populationSize = 3;
+
         double[] randsToSelectSecond = {0.00001, 0.99999, .0001, .99, .99, .99, 0.1, 0.1, 0.1};
         DoublePoint secondCentroid = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint fistCentroidPicked = new DoublePoint(new double[]{100, 300, 300});
         DoublePoint closeToFirstCentroid = createVectorCloseBy(fistCentroidPicked);
 
         KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sampleSize, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid));
+                numberOfCentroids, sampleSize, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid), populationSize);
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(2, centroids.size());
 
@@ -58,10 +63,10 @@ public class KMeansSamplerTest {
         DoublePoint closeToSecondCentroid = createVectorCloseBy(secondCentroid);
         DoublePoint farAway = new DoublePoint(new double[]{4, 5, 6});
         DoublePoint fartherAway = new DoublePoint(new double[]{1, 1, 1});
-
+        long populationSize = 6;
         KMeansSampler<DoublePoint> sampler = new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, sizeOfSample, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid,
-                closeToSecondCentroid, farAway, fartherAway));
+                closeToSecondCentroid, farAway, fartherAway), populationSize);
         List<CentroidCluster<DoublePoint>> centroids = sampler.getCentroids();
         Assert.assertEquals(2, centroids.size());
 
@@ -85,8 +90,9 @@ public class KMeansSamplerTest {
         DoublePoint first = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
+        long populationSize =2;
         new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second));
+                numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second), populationSize);
     }
 
     private DoublePoint createVectorCloseBy(DoublePoint vector) {

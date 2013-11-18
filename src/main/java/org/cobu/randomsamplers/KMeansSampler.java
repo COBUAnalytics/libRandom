@@ -13,9 +13,6 @@ public class KMeansSampler<P extends DoublePoint> {
     private final long populationSize;
     private Iterable<P> factory;
 
-    public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Collection<P> factory) {
-        this(random, numberOfCentroids, sampleSize, factory, factory.size());
-    }
 
     public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<P> factory, long populationSize) {
         this.populationSize = populationSize;
@@ -29,9 +26,6 @@ public class KMeansSampler<P extends DoublePoint> {
         findClusterCentroids(numberOfCentroids);
     }
 
-    public KMeansSampler(Random random, List<CentroidCluster<P>> centroids, int sampleSize, Collection<P> factory) {
-        this(random, centroids, sampleSize, factory, factory.size());
-    }
 
     public KMeansSampler(Random random, List<CentroidCluster<P>> centroids, int sampleSize, Iterable<P> factory, long populationSize) {
 
