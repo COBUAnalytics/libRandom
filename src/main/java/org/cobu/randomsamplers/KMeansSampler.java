@@ -60,11 +60,13 @@ public class KMeansSampler<P extends DoublePoint> {
                 sampler.add(cdwr);
             }
 
-            samples = new ArrayList<P>(sampleSize);
-            for (int i = 0; i < sampleSize; i++) {
-                P record = sampler.getSamples().get(i).getRecord();
-                samples.add(record);
-
+            List<CentroidDistanceWeightedRecord<P>> samplerResults = sampler.getSamples();
+            if(samplerResults.size() != sampleSize){
+                System.out.println(String.format("Expected %d samples but got %d", sampleSize, samplerResults.size()));
+            }
+            samples = new ArrayList<P>(samplerResults.size());
+            for (CentroidDistanceWeightedRecord<P> record : samplerResults) {
+                samples.add(record.getRecord());
             }
         }
 
