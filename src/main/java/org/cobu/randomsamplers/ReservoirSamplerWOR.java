@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 
-public class ReservoirSamplerWOR<T extends WeightedRecord> {
+public class
+        ReservoirSamplerWOR<T extends WeightedRecord> {
     private final TreeSet<ScoredWeightedRecord<T>> weightedRecords = new TreeSet<ScoredWeightedRecord<T>>();
     private final Random random;
     private final int reservoirSize;
