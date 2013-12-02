@@ -91,7 +91,7 @@ public class KMeansSamplerTest {
         DoublePoint first = new DoublePoint(new double[]{.1, .2, .3});
         DoublePoint second = new DoublePoint(new double[]{.1, .5, .3});
 
-        long populationSize = 2;
+        long populationSize =2;
         new KMeansSampler<DoublePoint>(new ArrayRandom(randsToSelectSecond),
                 numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second), populationSize, new EuclideanDistance());
     }

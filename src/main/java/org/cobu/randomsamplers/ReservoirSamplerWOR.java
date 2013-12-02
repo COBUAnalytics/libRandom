@@ -18,6 +18,7 @@ public class
     public ReservoirSamplerWOR(Random random, int reservoirSize) {
         this.random = random;
         this.reservoirSize = reservoirSize;
+     //   System.out.println("reservoirSize"+ this.reservoirSize);
     }
 
     public void add(T weightedRecord) {
@@ -25,6 +26,7 @@ public class
 
         boolean notEnoughValues = weightedRecords.size() < reservoirSize;
         boolean smallerThanCurrentMax = !weightedRecords.isEmpty() && weightedRecords.last().compareTo(newScore) > 0;
+
         if (notEnoughValues || smallerThanCurrentMax) {
             weightedRecords.add(newScore);
             removeMaxValueIfOverReservoirSize();
@@ -46,8 +48,9 @@ public class
 
     private void removeMaxValueIfOverReservoirSize() {
         if (weightedRecords.size() > reservoirSize) {
-            ScoredWeightedRecord evictee=weightedRecords.last();
+            ScoredWeightedRecord evictee = weightedRecords.last();
             weightedRecords.remove(evictee);
+            System.out.println("removeMax  " +  weightedRecords.size() + " " + reservoirSize);
         }
     }
 }

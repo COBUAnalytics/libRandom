@@ -63,6 +63,8 @@ public class KMeansSampler<P extends DoublePoint> {
                 sampler.add(cdwr);
             }
 
+
+
             List<CentroidDistanceWeightedRecord<P>> samplerResults = sampler.getSamples();
             if(samplerResults.size() != sampleSize){
                 System.out.println(String.format("Expected %d samples but got %d", sampleSize, samplerResults.size()));
