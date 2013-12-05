@@ -50,7 +50,7 @@ public class
         if (weightedRecords.size() > reservoirSize) {
             ScoredWeightedRecord evictee = weightedRecords.last();
             weightedRecords.remove(evictee);
-            System.out.println("removeMax  " +  weightedRecords.size() + " " + reservoirSize);
+//            System.out.println("removeMax  " +  weightedRecords.size() + " " + reservoirSize);
         }
     }
 }
