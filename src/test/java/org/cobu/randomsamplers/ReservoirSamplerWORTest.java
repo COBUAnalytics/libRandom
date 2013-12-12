@@ -1,15 +1,49 @@
 package org.cobu.randomsamplers;
 
+import org.cobu.random.MersenneTwisterRandom;
 import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
 import org.cobu.randomsamplers.weightedrecords.WeightedRecordAdapter;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class ReservoirSamplerWORTest {
+    private List<WeightedRecord> population = new ArrayList<WeightedRecord>();
+
+    @Before
+    public void setup() {
+        for (int i = 0; i < 4; i++) {
+            population.add(new WeightedRecordAdapter(i));
+        }
+    }
+
+    @Test
+    public void reservoirSizeOfOneStatistialTest() {
+        double[] histogram = new double[4];
+        int count = 100000;
+        for (int i = 0; i < count; i++) {
+            ReservoirSamplerWOR<WeightedRecord> rswor = new ReservoirSamplerWOR<WeightedRecord>(new MersenneTwisterRandom(), 1);
+            for (WeightedRecord p : population) {
+                rswor.add(p);
+            }
+            List<WeightedRecord> sample = rswor.getSamples();
+            int weight = (int) sample.get(0).getWeight();
+            histogram[weight] = histogram[weight] + 1;
+        }
+        for (int i = 0; i < histogram.length; i++) {
+            histogram[i]= histogram[i]/count;
+        }
+        double[] expected = {0, 1.0/6, 2.0/6, 3.0/6};
+        assertArrayEquals(expected, histogram, 0.01);
+    }
+
     @Test
     public void reservoirSizeOfOnePopulationSizeOfOne() {
         ReservoirSamplerWOR<WeightedRecord> rswor = new ArraySamples(1);
