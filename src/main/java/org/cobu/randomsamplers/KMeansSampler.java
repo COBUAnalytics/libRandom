@@ -74,7 +74,6 @@ public class KMeansSampler<P extends DoublePoint> {
                 samples.add(record.getRecord());
             }
         }
-
         return samples;
     }
 
