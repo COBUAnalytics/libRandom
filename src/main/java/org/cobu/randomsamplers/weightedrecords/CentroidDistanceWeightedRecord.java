@@ -28,6 +28,18 @@ public class CentroidDistanceWeightedRecord<P extends DoublePoint> implements We
         this(currentClusters, dataVector, new EuclideanDistance());
     }
 
+    public CentroidDistanceWeightedRecord(CentroidCluster<P> newAddedCluster, double minDistanceBefore,  P record, DistanceMeasure distanceMeasure){
+        this.record = record;
+        this.distanceMeasure = distanceMeasure;
+        this.clusters = null;
+        if(newAddedCluster == null){
+            weight = 1.0;
+        } else{
+            double newDistance = distanceMeasure.compute(newAddedCluster.getCenter().getPoint(), record.getPoint());
+            weight = Math.min(minDistanceBefore, newDistance);
+        }
+    };
+
     public P getRecord() {
         return record;
     }

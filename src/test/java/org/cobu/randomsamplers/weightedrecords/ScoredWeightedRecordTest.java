@@ -2,6 +2,8 @@ package org.cobu.randomsamplers.weightedrecords;
 
 import org.junit.Test;
 
+import java.util.PriorityQueue;
+
 import static org.junit.Assert.assertEquals;
 
 public class ScoredWeightedRecordTest {
@@ -14,7 +16,10 @@ public class ScoredWeightedRecordTest {
             }
         });
     }
+    @Test
+    public void testPriorityQueue(){
 
+    }
     @Test
     public void twoWeightedRecordsSameWeight() {
         ScoredWeightedRecord one = createScoredWeightedRecord(1.0, 1.0);

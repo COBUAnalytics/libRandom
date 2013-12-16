@@ -14,6 +14,10 @@ public class ScoredWeightedRecord<T extends WeightedRecord> implements Comparabl
         return Double.compare(score,o.score);
     }
 
+    public double getScore() {
+        return score;
+    }
+
     public T getRecord() {
         return record;
     }

@@ -22,7 +22,7 @@ public class
     }
 
     public void add(T weightedRecord) {
-        ScoredWeightedRecord<T> newScore = new ScoredWeightedRecord<T>(nextRandomDouble(), weightedRecord);
+        ScoredWeightedRecord<T> newScore = new ScoredWeightedRecord<T>( nextRandomDouble(), weightedRecord);
 
         boolean notEnoughValues = weightedRecords.size() < reservoirSize;
         boolean smallerThanCurrentMax = !weightedRecords.isEmpty() && weightedRecords.last().compareTo(newScore) > 0;

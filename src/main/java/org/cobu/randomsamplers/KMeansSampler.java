@@ -8,12 +8,12 @@ import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 import java.util.*;
 
 public class KMeansSampler<P extends DoublePoint> {
-    private final List<CentroidCluster<P>> centroids;
-    private int sampleSize;
-    private Random random;
-    private final long populationSize;
-    private Iterable<P> factory;
-    private DistanceMeasure distanceMeasure;
+    protected final List<CentroidCluster<P>> centroids;
+    protected int sampleSize;
+    protected Random random;
+    protected final long populationSize;
+    protected Iterable<P> factory;
+    protected DistanceMeasure distanceMeasure;
 
 
     public KMeansSampler(Random random, int numberOfCentroids, int sampleSize, Iterable<P> factory, long populationSize, DistanceMeasure distanceMeasure) {
@@ -46,7 +46,7 @@ public class KMeansSampler<P extends DoublePoint> {
         }
     }
 
-    private void findClusterCentroids(int numberOfClusters) {
+    protected void findClusterCentroids(int numberOfClusters) {
         for (int i = 0; i < numberOfClusters; i++) {
             centroids.add(travelThroughDataToPickNextCentroid());
         }
@@ -84,6 +84,7 @@ public class KMeansSampler<P extends DoublePoint> {
         for (P vectorEntries : factory) {
             CentroidDistanceWeightedRecord<P> cdwr = new CentroidDistanceWeightedRecord<P>(currentClusters, vectorEntries, distanceMeasure);
             sampler.add(cdwr);
+
         }
         double[] centroidData = sampler.getSamples().get(0).getRecord().getPoint();
         return new CentroidCluster<P>(new DoublePoint(centroidData));
