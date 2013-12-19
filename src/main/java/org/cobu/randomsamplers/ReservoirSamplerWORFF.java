@@ -61,8 +61,9 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
                 weightedRecords.remove(weightedRecords.peek());
                 weightedRecords.add(newScore);
                 this.F = 0;
-                y = -Math.log(nextRandomDouble())/newScore.getScore();
-                r = newScore.getScore();
+               ///y = -Math.log(nextRandomDouble())/newScore.getScore();
+                r = weightedRecords.peek().getScore();
+                y =  -Math.log(nextRandomDouble())/r;
             }
         }
     }
