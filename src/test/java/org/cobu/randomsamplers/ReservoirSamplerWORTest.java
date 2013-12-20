@@ -17,6 +17,7 @@ import static org.junit.Assert.assertSame;
 public class ReservoirSamplerWORTest {
     private List<WeightedRecord> population = new ArrayList<WeightedRecord>();
     private double F = 0;
+
     @Before
     public void setup() {
         for (int i = 1; i <= 9; i++) {
@@ -26,7 +27,7 @@ public class ReservoirSamplerWORTest {
     }
 
     @Test
-    public void reservoirSizeOfOneStatistialTest() {
+    public void reservoirSizeOfOneStatisticalTest() {
         double frequency = 0;
         double value = 3;
         int count = 10000;
@@ -37,18 +38,21 @@ public class ReservoirSamplerWORTest {
             }
             List<WeightedRecord> sample = rswor.getSamples();
             assertEquals(1, sample.size());
-            if(Double.compare(sample.get(0).getWeight(), value)==0) frequency++ ;
+            if (Double.compare(sample.get(0).getWeight(), value) == 0) {
+                frequency++;
+            }
 
         }
         frequency /= count;
-        double expected = value/F;
+        double expected = value / F;
         assertEquals(expected, frequency, 0.01);
     }
+
     @Test
-    public void reservoirSizeOfTwoStatistialTest() {
+    public void reservoirSizeOfTwoStatisticalTest() {
         double frequency11 = 0;
         int count = 10000;
-        double[] r = {2,3};
+        double[] r = {2, 3};
         for (int i = 0; i < count; i++) {
             ReservoirSamplerWORFF<WeightedRecord> rswor = new ReservoirSamplerWORFF<>(new MersenneTwisterRandom(), 2);
             for (WeightedRecord p : population) {
@@ -56,15 +60,17 @@ public class ReservoirSamplerWORTest {
             }
             List<WeightedRecord> sample = rswor.getSamples();
             assertEquals(2, sample.size());
-            if((Double.compare(sample.get(0).getWeight(), r[0])==0) && (Double.compare(sample.get(1).getWeight(),r[1])==0) ) frequency11++;
+            if ((Double.compare(sample.get(0).getWeight(), r[0]) == 0) && (Double.compare(sample.get(1).getWeight(), r[1]) == 0))
+                frequency11++;
 
         }
 
         frequency11 /= count;
-        double expected = r[0]*r[1]/(F*(F-r[0]));
+        double expected = r[0] * r[1] / (F * (F - r[0]));
 
         assertEquals(expected, frequency11, 0.01);
     }
+
     @Test
     public void reservoirSizeOfOnePopulationSizeOfOne() {
         ReservoirSamplerWOR<WeightedRecord> rswor = new ArraySamples(1);

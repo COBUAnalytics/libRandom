@@ -22,7 +22,7 @@ class ScoredWeightedRecordComparator implements Comparator<ScoredWeightedRecord>
 
 public class ReservoirSamplerWORFF<T extends WeightedRecord> {
     private final PriorityQueue<ScoredWeightedRecord<T>> weightedRecords = new PriorityQueue<>(5, new ScoredWeightedRecordComparator());
-    private double F;
+    private double cumulativeWeight;
     private double y;
     private double r;
     private final Random random;
@@ -31,12 +31,8 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
     public ReservoirSamplerWORFF(Random random, int reservoirSize) {
         this.random = random;
         this.reservoirSize = reservoirSize;
-        this.F = 0;
+        this.cumulativeWeight = 0;
         this.y = 0;
-    }
-
-    protected double nextRandomDouble() {
-        return random.nextDouble();
     }
 
     public List<T> getSamples() {
@@ -49,26 +45,37 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
 
     public void add(T weightedRecord) {
         if (weightedRecords.size() < this.reservoirSize) {
-            ScoredWeightedRecord<T> newScore = new ScoredWeightedRecord<T>(nextRandomDouble(), weightedRecord);
+
+            ScoredWeightedRecord<T> newScore = scoreAndAddRecord(weightedRecord);
             weightedRecords.add(newScore);
-            if (weightedRecords.size() == this.reservoirSize) initializeFRY();
+            if (weightedRecords.size() == this.reservoirSize) {
+                initializeFRY();
+            }
         } else {
             double weight = weightedRecord.getWeight();
-            this.F += weight;
-            if (this.F > this.y) {
+            this.cumulativeWeight += weight;
+            if (this.cumulativeWeight > this.y) {
                 double v = 1 - nextRandomDouble() * (1 - Math.exp(-r * weight));
                 ScoredWeightedRecord<T> newScore = new ScoredWeightedRecord<T>(v, weightedRecord);
                 weightedRecords.remove(weightedRecords.peek());
                 weightedRecords.add(newScore);
-                this.F = 0;
+                this.cumulativeWeight = 0;
                 r = weightedRecords.peek().getScore();
-                y =  -Math.log(nextRandomDouble())/r;
+                y = -Math.log(nextRandomDouble()) / r;
             }
         }
     }
 
+    public ScoredWeightedRecord<T> scoreAndAddRecord(T weightedRecord) {
+        return new ScoredWeightedRecord<T>(nextRandomDouble(), weightedRecord);
+    }
+
+    protected double nextRandomDouble() {
+        return random.nextDouble();
+    }
+
     private void initializeFRY() {
-        F = 0;
+        cumulativeWeight = 0;
         r = weightedRecords.peek().getScore();
         y = -Math.log(nextRandomDouble()) / r;
     }

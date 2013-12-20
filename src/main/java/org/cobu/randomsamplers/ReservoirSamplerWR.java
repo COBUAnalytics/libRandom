@@ -49,7 +49,7 @@ public class ReservoirSamplerWR<T extends WeightedRecord>{
 
     }
     public List<T> getSamples() {
-        List<T> toReturn = new ArrayList<T>(weightedRecords);
+        List<T> toReturn = new ArrayList<>(weightedRecords);
         return toReturn;
     }
 
