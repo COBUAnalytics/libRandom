@@ -24,7 +24,7 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
     private final PriorityQueue<ScoredWeightedRecord<T>> weightedRecords = new PriorityQueue<>(5, new ScoredWeightedRecordComparator());
     private double cumulativeWeight;
     private double y;
-    private double r;
+    private double maxScoreInReservior;
     private final Random random;
     private final int reservoirSize;
 
@@ -55,13 +55,13 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
             double weight = weightedRecord.getWeight();
             this.cumulativeWeight += weight;
             if (this.cumulativeWeight > this.y) {
-                double v = 1 - nextRandomDouble() * (1 - Math.exp(-r * weight));
+                double v = 1 - nextRandomDouble() * (1 - Math.exp(-maxScoreInReservior * weight));
                 ScoredWeightedRecord<T> newScore = new ScoredWeightedRecord<T>(v, weightedRecord);
                 weightedRecords.remove(weightedRecords.peek());
                 weightedRecords.add(newScore);
                 this.cumulativeWeight = 0;
-                r = weightedRecords.peek().getScore();
-                y = -Math.log(nextRandomDouble()) / r;
+                maxScoreInReservior = weightedRecords.peek().getScore();
+                y = -Math.log(nextRandomDouble()) / maxScoreInReservior;
             }
         }
     }
@@ -76,8 +76,8 @@ public class ReservoirSamplerWORFF<T extends WeightedRecord> {
 
     private void initializeFRY() {
         cumulativeWeight = 0;
-        r = weightedRecords.peek().getScore();
-        y = -Math.log(nextRandomDouble()) / r;
+        maxScoreInReservior = weightedRecords.peek().getScore();
+        y = -Math.log(nextRandomDouble()) / maxScoreInReservior;
     }
 
     public static void main(String[] args) {

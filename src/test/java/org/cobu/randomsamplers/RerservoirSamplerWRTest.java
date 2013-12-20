@@ -17,15 +17,18 @@ import static org.junit.Assert.assertEquals;
  */
 public class RerservoirSamplerWRTest {
     private List<WeightedRecord> population = new ArrayList<WeightedRecord>();
+    private double totalWeight = 0;
     @Before
     public void setup() {
         for (int i = 0; i < 4; i++) {
             population.add(new WeightedRecordAdapter(i));
+            totalWeight += i;
         }
     }
     @Test
     public void reservoirSizeOfOneStatistialTest() {
-        double[] histogram = new double[4];
+        double result = 3;
+        double frequency = 0;
         int count = 10000;
         for (int i = 0; i < count; i++) {
             ReservoirSamplerWORFF<WeightedRecord> rswor = new ReservoirSamplerWORFF<>(new MersenneTwisterRandom(), 1);
@@ -34,21 +37,18 @@ public class RerservoirSamplerWRTest {
             }
             List<WeightedRecord> sample = rswor.getSamples();
             assertEquals(1, sample.size());
-            int weight = (int) sample.get(0).getWeight();
-            histogram[weight] = histogram[weight] + 1;
+            if(Double.compare(result, sample.get(0).getWeight())==0) frequency++;
         }
-        for (int i = 0; i < histogram.length; i++) {
-            histogram[i]= histogram[i]/count;
-            System.out.println(histogram[i]);
-        }
-        double[] expected = {0, 1.0/6, 2.0/6, 3.0/6};
-        assertArrayEquals(expected, histogram, 0.01);
+        frequency /= count;
+        double expected = result/totalWeight;
+        assertEquals(expected, frequency, 0.01);
     }
 
     @Test
     public void reservoirSizeOfTwwoStatistialTest() {
-        double frequency11 = 0;
+        double frequency = 0;
         int count = 10000;
+        double[] results = {2, 2};
         for (int i = 0; i < count; i++) {
             ReservoirSamplerWR<WeightedRecord> rswor = new ReservoirSamplerWR<>(new MersenneTwisterRandom(), 2);
             for (WeightedRecord p : population) {
@@ -56,13 +56,12 @@ public class RerservoirSamplerWRTest {
             }
             List<WeightedRecord> sample = rswor.getSamples();
             assertEquals(2, sample.size());
-            if((Double.compare(sample.get(0).getWeight(),2)==0) && (Double.compare(sample.get(1).getWeight(),2.0)==0) ) frequency11++;
+            if((Double.compare(sample.get(0).getWeight(), results[0])==0) && (Double.compare(sample.get(1).getWeight(),results[1])==0) ) frequency++;
 
         }
 
-       frequency11 /= count;
-        double expected = 4.0/36;
-
-        assertEquals(expected, frequency11, 0.01);
+        frequency /= count;
+        double expected = results[0]*results[1]/(totalWeight*totalWeight);
+        assertEquals(expected, frequency, 0.01);
     }
 }

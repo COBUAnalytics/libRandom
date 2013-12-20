@@ -20,6 +20,7 @@ public class CentroidDistanceWeightedRecord<P extends DoublePoint> implements We
             weight = 1.0;
         } else {
             weight = calculateDistanceToNearestCentroid();
+            weight = weight*weight;
         }
 
     }
@@ -37,6 +38,7 @@ public class CentroidDistanceWeightedRecord<P extends DoublePoint> implements We
         } else{
             double newDistance = distanceMeasure.compute(newAddedCluster.getCenter().getPoint(), record.getPoint());
             weight = Math.min(minDistanceBefore, newDistance);
+            weight = weight*weight;
         }
     };
 

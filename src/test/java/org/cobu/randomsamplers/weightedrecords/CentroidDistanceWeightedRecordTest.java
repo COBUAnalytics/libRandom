@@ -32,7 +32,7 @@ public class CentroidDistanceWeightedRecordTest {
         DoublePoint threeDistance = new DoublePoint(new double[]{4, 4, 4});
         Vector difference = new DenseVector(threeDistance.getPoint()).add(-1, new DenseVector(centroid.getPoint()));
 
-        assertEquals(difference.norm(Vector.Norm.Two), new CentroidDistanceWeightedRecord<DoublePoint>(currentClusters, threeDistance).getWeight(), 0);
+        assertEquals(Math.pow(difference.norm(Vector.Norm.Two),2), new CentroidDistanceWeightedRecord<DoublePoint>(currentClusters, threeDistance).getWeight(), 0);
      }
 
 

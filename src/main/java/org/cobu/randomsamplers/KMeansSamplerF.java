@@ -21,8 +21,8 @@ public class KMeansSamplerF<P extends DoublePoint>  extends KMeansSampler<P> {
         HashMap<Integer, Double> minDistanceMap = new HashMap<>();
 
         for (int i = 0; i < numberOfClusters; i++) {
-            ReservoirSamplerWOR<CentroidDistanceWeightedRecord> sampler =
-                    new ReservoirSamplerWOR<CentroidDistanceWeightedRecord>(super.random, 1);
+            ReservoirSamplerWORFF<CentroidDistanceWeightedRecord> sampler =
+                    new ReservoirSamplerWORFF<CentroidDistanceWeightedRecord>(super.random, 1);
             int entryKey = 0;
             CentroidCluster<P> newAddedCluster = super.centroids.isEmpty() ? null : super.centroids.get(centroids.size()-1);
             for (P vectorEntries : super.factory) {

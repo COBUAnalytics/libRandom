@@ -12,6 +12,7 @@ import java.util.Random;
 
 public class KMeansSamplerTest {
 
+
     @Test
     public void testGetCentroidOneCluster() {
         int numberOfCentroids = 1;
@@ -29,12 +30,7 @@ public class KMeansSamplerTest {
 
         assertEquals(second.getPoint(), centroids.get(0).getCenter().getPoint());
 
-        KMeansSamplerF<DoublePoint> samplerF = new KMeansSamplerF<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sampleSize, Arrays.asList(first, second), populationSize, new EuclideanDistance());
-        final List<CentroidCluster<DoublePoint>> centroidsF = sampler.getCentroids();
-        Assert.assertEquals(1, centroidsF.size());
 
-        assertEquals(second.getPoint(), centroidsF.get(0).getCenter().getPoint());
     }
 
     @Test
@@ -56,13 +52,7 @@ public class KMeansSamplerTest {
         assertEquals(fistCentroidPicked.getPoint(), centroids.get(0).getCenter().getPoint());
         assertEquals(secondCentroid.getPoint(), centroids.get(1).getCenter().getPoint());
 
-        KMeansSamplerF<DoublePoint> samplerf = new KMeansSamplerF<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sampleSize, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid), populationSize, new EuclideanDistance());
-        List<CentroidCluster<DoublePoint>> centroidsF = sampler.getCentroids();
-        Assert.assertEquals(2, centroidsF.size());
 
-        assertEquals(fistCentroidPicked.getPoint(), centroidsF.get(0).getCenter().getPoint());
-        assertEquals(secondCentroid.getPoint(), centroidsF.get(1).getCenter().getPoint());
 
     }
 
@@ -95,20 +85,7 @@ public class KMeansSamplerTest {
         assertEquals(samples[0].getPoint(), farAway.getPoint());
         assertEquals(samples[1].getPoint(), fartherAway.getPoint());
 
-        KMeansSamplerF<DoublePoint> samplerF = new KMeansSamplerF<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, sizeOfSample, Arrays.asList(secondCentroid, fistCentroidPicked, closeToFirstCentroid,
-                closeToSecondCentroid, farAway, fartherAway), populationSize, new EuclideanDistance());
-        List<CentroidCluster<DoublePoint>> centroidsF = sampler.getCentroids();
-        Assert.assertEquals(2, centroidsF.size());
 
-        assertEquals(fistCentroidPicked.getPoint(), centroidsF.get(0).getCenter().getPoint());
-        assertEquals(secondCentroid.getPoint(), centroidsF.get(1).getCenter().getPoint());
-
-        List<DoublePoint> samples1F = samplerF.samples();
-        DoublePoint[] samplesF = samples1F.toArray(new DoublePoint[samples1.size()]);
-        Assert.assertEquals(2, samplesF.length);
-        assertEquals(samplesF[0].getPoint(), farAway.getPoint());
-        assertEquals(samplesF[1].getPoint(), fartherAway.getPoint());
 
 
     }
@@ -126,8 +103,7 @@ public class KMeansSamplerTest {
                 numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second), populationSize, new EuclideanDistance());
 
 
-        new KMeansSamplerF<DoublePoint>(new ArrayRandom(randsToSelectSecond),
-                numberOfCentroids, Integer.MAX_VALUE, Arrays.asList(first, second), populationSize, new EuclideanDistance());
+
     }
 
     private DoublePoint createVectorCloseBy(DoublePoint vector) {
