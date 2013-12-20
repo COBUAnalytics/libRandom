@@ -7,6 +7,7 @@ public class ScoredWeightedRecord<T extends WeightedRecord> implements Comparabl
     public ScoredWeightedRecord(double randomDouble, T record) {
         this.record = record;
         this.score = -Math.log(randomDouble) / record.getWeight();
+
     }
 
     @Override
