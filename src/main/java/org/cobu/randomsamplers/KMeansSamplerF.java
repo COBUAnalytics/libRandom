@@ -8,9 +8,6 @@ import org.cobu.randomsamplers.weightedrecords.CentroidDistanceWeightedRecord;
 import java.util.HashMap;
 import java.util.Random;
 
-/**
- * Created by HY on 12/16/13.
- */
 public class KMeansSamplerF<P extends DoublePoint>  extends KMeansSampler<P> {
 
     public KMeansSamplerF(Random random, int numberOfCentroids, int sampleSize, Iterable<P> factory, long populationSize, DistanceMeasure distanceMeasure) {
