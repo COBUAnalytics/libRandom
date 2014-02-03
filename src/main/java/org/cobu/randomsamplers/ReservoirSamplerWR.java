@@ -1,15 +1,11 @@
 package org.cobu.randomsamplers;
 
-import org.cobu.randomsamplers.weightedrecords.ScoredWeightedRecord;
 import org.cobu.randomsamplers.weightedrecords.WeightedRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by HY on 12/19/13.
- */
 public class ReservoirSamplerWR<T extends WeightedRecord>{
     private final Random random;
     private final int reservoirSize;
